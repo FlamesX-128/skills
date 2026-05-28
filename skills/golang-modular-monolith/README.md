@@ -1,67 +1,53 @@
 # Golang Modular Monolith
 
-Naming + layout convention for Go modular monoliths. **File location computable from intent**: `module` + `layer` + `entity` + `operation` → exact path, no invention.
+Strict file and directory convention for Go modular monoliths: deterministic file placement, closed vocabularies per layer, bundled validator.
 
-Codebase predictable for humans **and** LLMs. Closed vocab per layer, enforced `<entity>_<operation>` shape, bundled validator. Both navigate by composition, not exploration.
-
-## What's bundled with this skill
-
-- **[`SKILL.md`](SKILL.md)** - Canonical spec. Agent loads on trigger.
-- **[`scripts/validate.py`](scripts/validate.py)** - Python validator. Self-contained `uv` project: 74 tests (pytest), `ruff`, `mypy` strict.
-- **[`examples/book/`](examples/book/)** - Worked `book` module: CRUD endpoints, soft-delete via `PATCH`, mappers, DTOs, SQL. Every `.go` = stub (`package <name>` only). Demos *file placement*, not Go logic.
-- **[`format.bash`](format.bash)** - Formats skill Python (`ruff`) + Markdown (`mdformat`).
-- **[`LICENSE`](LICENSE)** - MIT, © 2026 FlamesX-128.
-
-## Quick start
-
-### Install the skill
-
-Published as [Agent Skill](https://agentskills.io/home). Install via [`skills`](https://github.com/vercel-labs/skills) CLI:
+## Install
 
 ```bash
-pnpm dlx skills add FlamesX-128/skills --skill=golang-modular-monolith
+skills add FlamesX-128/skills --skill=golang-modular-monolith
 ```
 
-Add `-g` for global install. Agent loads `SKILL.md` for spec, runs `scripts/validate.py` after every change (Claude Code: `${CLAUDE_SKILL_DIR}/scripts/validate.py`; other runtimes: equivalent install-path var).
+## Structure
 
-### Validate a project against the convention
+```
+examples/book/                worked book module demonstrating file placement
+references/
+├── http-layer.md             routes, sub-resources vs PATCH, forbidden names
+├── postgres-layer.md         SQL ops, modifiers, CTEs, one-op-per-file
+├── service-layer.md          function naming per layer, banned tokens
+├── tool-slot.md              which layers get tool/, naming rules
+├── multi-entity.md           sub-entity vs separate module decision
+└── validator-development.md  extending the validator
+scripts/validate.py           Python validator (74 tests, ruff, mypy strict)
+SKILL.md                      cardinal rules + module layout tree
+```
 
-From this skill dir:
+## Validate
 
 ```bash
 python3 scripts/validate.py /path/to/your/project
 ```
 
-Exit `0` = no errors. Warnings on empty structural slots are advisory.
+Exit `0` = clean. Explore the example: `python3 scripts/validate.py examples/book`.
 
-### Explore the example
+## Convention at a glance
 
-```bash
-python3 scripts/validate.py examples/book
-```
-
-Read [`SKILL.md`](SKILL.md) alongside file tree under `examples/book/`. Each file demos a specific rule.
-
-### Format
-
-Two `format.bash` scripts, one per subproject:
-
-- **[`format.bash`](format.bash)** - `ruff format` for validator Python + `mdformat` for skill Markdown.
-- **[`examples/book/format.bash`](examples/book/format.bash)** - `gofmt` for Go + `sql-formatter` for `.sql`. Empty stubs skipped.
-
-## The convention in one screen
-
-- **Layers**: `model/`, `service/`, `infrastructure/`, `interface/`. Strict separation; deps flow inward.
-- **Closed vocabularies per layer**:
+- **Layers**: `model/`, `service/`, `infrastructure/`, `interface/`. Deps flow inward.
+- **Closed vocabularies**:
   - SQL: `select / insert / update / delete / merge / truncate`
   - HTTP: `get / post / put / patch / delete / head / options / query`
   - Service: free-form domain verbs (`create`, `archive`, `login`, …)
-- **File naming**: `<entity>_<operation>.<ext>` everywhere. Exceptions: `model/<entity>.go`, `interface/http/register.go`, helpers in `tool/`.
-- **`tool/` slot**: layer-local helpers. Allowed at root of each major layer; forbidden in leaf subdirs.
-- **Domain actions**: REST sub-resource only if produces new tracked entity (`sessions`, `password-resets`). Field flips (archive, publish, lock) → `PATCH /<entity>/:id`.
+- **File naming**: `<entity>_<operation>.<ext>`. Exceptions: `model/<entity>.go`, `interface/http/register.go`, `tool/` helpers.
+- **Domain actions**: sub-resource only if it produces a new tracked entity. Field flips → `PATCH /<entity>/:id`.
 
-See [`SKILL.md`](SKILL.md) for full spec, multi-entity decision rule, counter-examples.
+Full spec in [`SKILL.md`](SKILL.md). Layer details in [`references/`](references/).
 
-## Why a convention, not a framework
+## Format
 
-Most "clean architecture" docs = advice, decay on interpretation. This is thin opinionated convention + validator. Every rule has check, every check has test, validator decides compliance. Safe to delegate to LLMs: cannot quietly invent path that fits training but breaks layout — validator catches on next run.
+- **[`format.bash`](format.bash)** — `ruff format` + `mdformat`.
+- **[`examples/book/format.bash`](examples/book/format.bash)** — `gofmt` + `sql-formatter`.
+
+## License
+
+MIT, © 2026 FlamesX-128. See [LICENSE](LICENSE).
