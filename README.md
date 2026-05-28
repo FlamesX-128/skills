@@ -4,19 +4,18 @@ Personal collection of [Agent Skills](https://agentskills.io/home), compat w/ [`
 
 ## Skills
 
-| Skill                                      | Description                                             |
-| ------------------------------------------ | ------------------------------------------------------- |
-| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths. |
+| Skill                                                          | Description                                                                                                                   |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **[code-paragraphs](skills/code-paragraphs/)**                 | Vertical-layout conventions: blank lines as paragraph breaks, struct field grouping, import ordering. Bundles a Go reference. |
+| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                                       |
 
 ## Layout
 
 Each skill fully self-contained — bundles own `SKILL.md`, `README.md`, `LICENSE`, any tooling (validators, formatters, examples) — install independently w/ `skills` CLI:
 
 ```bash
-pnpm dlx skills add FlamesX-128/skills --skill=golang-modular-monolith
+skills add FlamesX-128/skills --skill=golang-modular-monolith
 ```
-
-Add `-g` for global install, or `--skill='*'` to install all skills in repo.
 
 External skills mirrored from other repos pinned in [`skills-lock.json`](skills-lock.json).
 
