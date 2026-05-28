@@ -1,0 +1,10 @@
+{
+    "name": "book",
+    "devDependencies": {
+        "sql-formatter": "15.7.2"
+    },
+    "private": true,
+    "scripts": {
+        "format": "./format.bash"
+    }
+}

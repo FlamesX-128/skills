@@ -1,0 +1,21 @@
+{
+    "dataTypeCase": "upper",
+    "denseOperators": false,
+    "expressionWidth": 50,
+    "functionCase": "lower",
+    "indentStyle": "standard",
+    "keywordCase": "upper",
+    "language": "postgresql",
+    "linesBetweenQueries": 1,
+    "logicalOperatorNewline": "before",
+    "newlineBeforeSemicolon": false,
+    "paramTypes": {
+        "custom": [
+            {
+                "regex": ":[a-zA-Z_][a-zA-Z0-9_]*"
+            }
+        ]
+    },
+    "tabWidth": 4,
+    "useTabs": false
+}
