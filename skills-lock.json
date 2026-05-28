@@ -1,17 +1,10 @@
 {
   "version": 1,
   "skills": {
-    "caveman-compress": {
+    "caveman": {
       "source": "juliusbrussee/caveman",
       "sourceType": "github",
-      "skillPath": "skills/caveman-compress/SKILL.md",
-      "computedHash": "f61268bc137909b25053b018de45d90afc3a856569088a9ef9e1d0fdc8147b35"
-    },
-    "caveman-review": {
-      "source": "juliusbrussee/caveman",
-      "sourceType": "github",
-      "skillPath": "skills/caveman-review/SKILL.md",
-      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
+      "computedHash": "dfbf85749fd474feeb0bbe60c779795ecd5dbec0083299b56e68916bc3ddd8c9"
     },
     "git-commit": {
       "source": "github/awesome-copilot",
