@@ -35,9 +35,9 @@ Exit `0` = clean. Explore the example: `python3 scripts/validate.py examples/boo
 
 - **Layers**: `model/`, `service/`, `infrastructure/`, `interface/`. Deps flow inward.
 - **Closed vocabularies**:
-  - SQL: `select / insert / update / delete / merge / truncate`
-  - HTTP: `get / post / put / patch / delete / head / options / query`
-  - Service: free-form domain verbs (`create`, `archive`, `login`, …)
+    - SQL: `select / insert / update / delete / merge / truncate`
+    - HTTP: `get / post / put / patch / delete / head / options / query`
+    - Service: free-form domain verbs (`create`, `archive`, `login`, …)
 - **File naming**: `<entity>_<operation>.<ext>`. Exceptions: `model/<entity>.go`, `interface/http/register.go`, `tool/` helpers.
 - **Domain actions**: sub-resource only if it produces a new tracked entity. Field flips → `PATCH /<entity>/:id`.
 

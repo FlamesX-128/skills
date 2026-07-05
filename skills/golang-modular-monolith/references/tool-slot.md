@@ -1,6 +1,6 @@
 # The `tool/` slot
 
-`tool/` = directory of helpers local to the parent layer. Exists at root of adapter or main layer; sub-directories never have their own `tool/`.
+`tool/` = directory of helpers local to parent layer. Exists at root of adapter or main layer; sub-directories never own `tool/`.
 
 Has own `tool/`:
 
@@ -20,7 +20,7 @@ Does NOT have `tool/`:
 
 Inside `tool/`:
 
-- Files named for *what they resolve*, no entity prefix: `parse.go`, `scan.go`, `format.go`.
-- Helpers are private to the layer. `interface/http/tool/` is not callable from `service/`.
-- If a helper is needed in more than one module, promote to `internal/shared/` instead of duplicating under each module's `tool/`.
-- Create the directory only once there is at least one file to put inside.
+- Files named for what they resolve, no entity prefix: `parse.go`, `scan.go`, `format.go`.
+- Helpers private to layer. `interface/http/tool/` not callable from `service/`.
+- Helper needed in more than one module → promote to `internal/shared/`, don't duplicate under each module's `tool/`.
+- Create directory only when at least one file exists to put inside.

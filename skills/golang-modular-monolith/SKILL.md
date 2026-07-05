@@ -1,18 +1,17 @@
 ---
 name: golang-modular-monolith
 description: Apply when structuring or adding files inside `cmd/` or `internal/`.
-user-invocable: true
 license: MIT. See bundled LICENSE for full terms.
 compatibility: Designed for AI coding agents working on Go projects. Requires Python 3.12+ and uv to run the bundled validator.
 allowed-tools: Read Edit Write Glob Grep Bash(go:*) Bash(python3:*) Bash(uv:*) Bash(git:*) Agent AskUserQuestion
 metadata:
-  author: FlamesX-128
-  version: 1.0.0
+    author: FlamesX-128
+    version: 1.0.0
 ---
 
 # Golang Modular Monolith
 
-Naming + layout convention for Go modular monoliths. File location computable from intent: `module` + `layer` + `entity` + `operation` -> exact path. When something doesn't fit, **ask - don't invent.**
+Naming + layout convention for Go modular monoliths. File path from intent: `module` + `layer` + `entity` + `operation` -> exact path. Doesn't fit? **Ask — don't invent.**
 
 References:
 
@@ -26,11 +25,11 @@ References:
 
 ## Cardinal rules
 
-1. **Every operation file has entity prefix: `<entity>_<operation>.<ext>`.** Exceptions: `interface/http/register.go`, per-entity files in `model/`, helpers inside `tool/`.
+1. **Every operation file has entity prefix: `<entity>_<operation>.<ext>`.** Except: `interface/http/register.go`, per-entity files in `model/`, helpers inside `tool/`.
 2. **Each layer has closed vocabulary.**
-   - **SQL** (`infrastructure/postgres/*`, `service/mapper/postgres/`): `select / insert / update / delete / merge / truncate`.
-   - **HTTP** (`interface/http/*`, `service/mapper/http/`): `get / post / put / patch / delete / head / options / query`.
-   - **Service** (`service/`): free-form snake_case domain actions (`create`, `archive`, `login`).
+    - **SQL** (`infrastructure/postgres/*`, `service/mapper/postgres/`): `select / insert / update / delete / merge / truncate`.
+    - **HTTP** (`interface/http/*`, `service/mapper/http/`): `get / post / put / patch / delete / head / options / query`.
+    - **Service** (`service/`): free-form snake_case domain actions (`create`, `archive`, `login`).
 3. **One operation per `.sql` file.** CTEs fine; chaining independent mutations not.
 4. **Infrastructure speaks SQL only.** Domain verbs live in `service/` and `handler/`, never `infrastructure/`.
 5. **Go package name == directory name.** Clash → import alias, never rename.

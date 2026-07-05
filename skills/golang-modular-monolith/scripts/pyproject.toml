@@ -12,28 +12,6 @@ dev = [
     "mypy>=1.10",
 ]
 
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = [
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "F",    # pyflakes
-    "I",    # isort
-    "B",    # bugbear
-    "UP",   # pyupgrade
-    "SIM",  # simplify
-    "RET",  # return cleanliness
-    "PTH",  # use pathlib
-    "C4",   # comprehensions
-]
-ignore = ["E501"]
-
-[tool.ruff.format]
-quote-style = "double"
-
 [tool.mypy]
 python_version = "3.12"
 strict = true

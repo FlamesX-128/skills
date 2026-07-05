@@ -14,4 +14,4 @@ uv run mypy validate.py       # strict type check
 
 ## Extending
 
-Add test in `tests/test_validate.py` covering both accept and reject cases **before** changing `validate.py`. Existing tests = contract — keep green.
+Add test in `tests/test_validate.py` covering accept and reject cases before changing `validate.py`. Existing tests = contract — keep green.

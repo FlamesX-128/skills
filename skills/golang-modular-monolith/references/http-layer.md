@@ -1,6 +1,6 @@
 # HTTP layer
 
-Files in `interface/http/handler/`, `interface/http/dto/`, `service/mapper/http/` use **HTTP methods** as operation suffix — and only HTTP methods.
+Files in `interface/http/handler/`, `interface/http/dto/`, `service/mapper/http/` use HTTP methods as operation suffix — only HTTP methods.
 
 Route -> file:
 
@@ -10,19 +10,19 @@ Route -> file:
 - `DELETE /employees/:id` -> `employee_delete.go`
 - `GET /employees?filter=...` (list with filters) -> `employee_query.go`
 
-Note: `query` is used as HTTP-method suffix for list/filter endpoints, in addition to standard verbs. Not a generic word for "any query".
+Note: `query` = HTTP-method suffix for list/filter endpoints, not generic word for "any query".
 
 ## Domain actions: sub-resource vs PATCH on parent
 
-Domain actions ("login", "archive", "publish", "reset password") never become HTTP-method files like `book_archive.go`. Model one of two ways — pick by what the action *produces*, not by the verb the product team uses.
+Domain actions ("login", "archive", "publish", "reset password") never become HTTP-method files like `book_archive.go`. Model one of two ways — pick by what action produces, not verb product team uses.
 
-**Sub-resource** when action creates an independently-trackable thing — new row, token, audit event, anything with its own lifecycle. File named after sub-entity:
+Sub-resource when action creates independently-trackable thing — new row, token, audit event, anything with own lifecycle. File named after sub-entity:
 
 - `POST /clients/:id/sessions` -> `session_post.go` — session row (own id, expiry, revocation)
 - `POST /clients/:id/password-resets` -> `password_reset_post.go` — one-shot reset token
 - `DELETE /clients/:id/sessions/:sid` -> `session_delete.go` — revokes specific session
 
-**`PATCH /<entity>/:id` on parent** when action just flips a field on the existing entity — `archived_at`, `published_at`, `locked_at`, `approved_at`. No new thing created; the resource's own state changes. File = entity's PATCH handler:
+`PATCH /<entity>/:id` on parent when action just flips field on existing entity — `archived_at`, `published_at`, `locked_at`, `approved_at`. No new thing created; resource state changes. File = entity's PATCH handler:
 
 - Archive (soft-delete) book: `PATCH /books/:id` body `{"archived": true}` -> `book_patch.go`
 - Publish article: `PATCH /articles/:id` body `{"published": true}` -> `article_patch.go`
@@ -30,16 +30,16 @@ Domain actions ("login", "archive", "publish", "reset password") never become HT
 
 Service action keeps domain name in `service/` (`book_archive.go`, `article_publish.go`). SQL still uses closed vocabulary (`book_update_archived.sql`). Only HTTP file name follows REST shape of actual transport.
 
-> WARNING: Common mistake — inventing noun-form sub-resource (`archival`, `publication`, `lock`) for what is a field flip. If the only thing changing on the server is a timestamp column on the parent row, it's `PATCH`, not a new resource.
+> WARNING: Common mistake — inventing noun-form sub-resource (`archival`, `publication`, `lock`) for field flip. If only change is timestamp column on parent row, it's `PATCH`, not new resource.
 
 ## Forbidden HTTP file names
 
-- Domain verbs as suffix: `employee_login.go`, `user_archive.go`. Suffix must be HTTP method; *action* belongs in `service/`.
+- Domain verbs as suffix: `employee_login.go`, `user_archive.go`. Suffix must be HTTP method; action belongs in `service/`.
 - Bare verb without entity: `post.go`, `get.go`. Always prefix with entity (or sub-entity for action-resources).
 - Made-up sub-entities for field flips: `archival_post.go`, `publication_post.go`. Use `PATCH /<entity>/:id` instead — see above.
 
-If an operation genuinely resists REST modeling, stop and ask before inventing a name.
+Operation genuinely resists REST modeling -> stop and ask before inventing name.
 
 ## `register.go`
 
-Single file at `interface/http/<module>/register.go` declares all routes for the whole module. Only file in `interface/http/`'s root without entity prefix. Add new route here when creating a handler.
+Single file at `interface/http/<module>/register.go` declares all routes for module. Only file in `interface/http/` root without entity prefix. Add new route here when creating handler.

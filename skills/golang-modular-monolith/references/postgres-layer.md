@@ -1,14 +1,14 @@
 # Postgres layer
 
-Files in `infrastructure/postgres/`, `infrastructure/postgres/dto/`, `infrastructure/postgres/sql/`, `service/mapper/postgres/` use **SQL operations** as suffix.
+Files in `infrastructure/postgres/`, `infrastructure/postgres/dto/`, `infrastructure/postgres/sql/`, `service/mapper/postgres/` use SQL operations as suffix.
 
 Pattern: `<table>_<sql_op>[_<modifier>].<ext>` where `<sql_op>` in `{select, insert, update, delete, merge, truncate}`.
 
-Prefix in `sql/` = **actual Postgres table name**. Usually matches Go entity but may differ for plural tables or join tables (e.g. `user_role`, `users`).
+Prefix in `sql/` = actual Postgres table name. Usually matches Go entity; differs for plural or join tables (e.g. `user_role`, `users`).
 
 ## Final statement decides suffix
 
-CTEs are preparation; suffix follows the outer statement that returns the result.
+CTEs = preparation; suffix follows outer statement returning result.
 
 - `SELECT ...` or `SELECT COUNT(*)` -> `_select`
 - `INSERT ... RETURNING *` -> `_insert`
@@ -25,7 +25,7 @@ CTEs are preparation; suffix follows the outer statement that returns the result
 
 ## One operation per `.sql` file
 
-Single final statement per file. CTEs are valid preparation. Independent mutations chained in one file are not.
+One final statement per file. CTEs valid as preparation. Independent mutations chained in one file invalid.
 
 ```sql
 -- WRONG: two independent mutations in one file
@@ -36,7 +36,7 @@ WITH affected AS (SELECT id FROM y WHERE z = $1)
 UPDATE x SET archived_at = NOW() WHERE id IN (SELECT id FROM affected);
 ```
 
-When an operation genuinely needs multiple writes, expose as separate functions in `infrastructure/postgres/`. Coordinate in `service/` inside a transaction.
+Operation genuinely needs multiple writes -> expose as separate functions in `infrastructure/postgres/`. Coordinate in `service/` inside transaction.
 
 ## Words that look like SQL but aren't operations
 
