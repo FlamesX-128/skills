@@ -1,159 +1,151 @@
 ---
 name: code-paragraphs
-description: Vertical layout signals logical structure. Blank lines as paragraph breaks between groups of related fields, imports, statements, function steps. Use when adding struct fields, ordering imports, reviewing handler error paths, judging when blank line earns place vs signals missing extraction, or enforcing layout consistency.
+description: Vertical layout signals logical structure. Blank lines as paragraph breaks between groups of related lines — struct fields, interface members, component props, imports, statements, function steps. Attributes and members ordered by role. Use when adding or reordering fields/props, grouping imports, ordering tag attributes, judging when a blank line earns its place vs signals a missing extraction, or enforcing layout consistency across Go, TypeScript, Svelte, HTML.
 license: MIT
-compatibility: Language-agnostic principles. Per-language recipes in `references/`.
-allowed-tools: Read Edit Write Glob Grep Bash(gofmt:*) Bash(goimports:*) Bash(go:*) Bash(prettier:*) Bash(black:*) Bash(rustfmt:*) Bash(git:*)
+compatibility: Language-agnostic core. Per-language recipes in `references/`.
+allowed-tools: Read Edit Write Glob Grep Bash(gofmt:*) Bash(goimports:*) Bash(go:*) Bash(prettier:*) Bash(eslint:*) Bash(black:*) Bash(ruff:*) Bash(rustfmt:*) Bash(git:*)
 metadata:
-  author: FlamesX-128
-  version: 1.0.0
-  user-invocable: true
+    author: FlamesX-128
+    version: 2.0.0
+    user-invocable: true
 ---
 
 # Code Paragraphs
 
-Vertical layout shows logical structure. Group related lines into paragraphs separated by blank lines; formatter handles horizontal whitespace.
+> "Good visual layout shows the logical structure of a program." — Steve McConnell
 
-> "Good visual layout shows the logical structure of a program." - Steve McConnell
+**One rule:** blank line = change of role. No blank = same role. Formatter owns horizontal space; you own vertical.
 
-References:
+## References
 
-- Go (structs, imports, multi-line calls, sqlx scan, slog, error paths) -> [Go reference](./references/go.md)
-- Authors, quotes, empty-line debate, empirical evidence -> [Literature](./references/literature.md)
+| Context                   | File                                        |
+| ------------------------- | ------------------------------------------- |
+| TypeScript / JavaScript   | [typescript.md](./references/typescript.md) |
+| Python                    | [python.md](./references/python.md)         |
+| Svelte                    | [svelte.md](./references/svelte.md)         |
+| HTML markup               | [html.md](./references/html.md)             |
+| Go                        | [go.md](./references/go.md)                 |
+| Authors, quotes, evidence | [literature.md](./references/literature.md) |
 
-## Core principles
+## Principles
 
-1. **Vertical openness between concepts.** Blank line separates groups playing different roles - validation vs compute vs response; identity vs content vs timestamps. _(Martin, Clean Code Ch. 5; McConnell, Code Complete Ch. 31.)_
-2. **Vertical density within concept.** No blanks inside group - gap weakens implied bond. _(Martin, "Vertical Density.")_
-3. **Vertical ordering: high to low.** Public API above private helpers, caller above callee, exports above internals - Newspaper Metaphor / Stepdown Rule. _(Martin; Kent Beck, Smalltalk Best Practice Patterns.)_
-4. **Co-locate declaration with first use.** Variable on line above use; no hoist locals to top. _(Martin, "Vertical Distance.")_
-5. **Formatter owns horizontal layout.** Never align `=` columns or struct tags by hand - `gofmt` / Prettier / Black / rustfmt own that. _(Rob Pike: "Gofmt's style is no one's favorite, yet gofmt is everyone's favorite.")_
-6. **Blank line earns place.** Third blank inside one function -> extract method. Blanks mark sub-steps; not substitute for naming. _(PEP 8 "sparingly"; Bugayenko's "empty line is code smell" - see [literature §3](./references/literature.md#3-the-counterargument-an-empty-line-is-a-code-smell).)_
+1. **Openness between concepts.** Blank separates groups playing different roles — validation vs compute vs response; identity vs content vs timestamps. _(Martin Ch. 5; McConnell Ch. 31.)_
+2. **Density within a concept.** No blank inside a group. A gap weakens the implied bond.
+3. **Order high → low.** Public above private, caller above callee, essential above incidental. Newspaper Metaphor / Stepdown Rule. _(Martin; Beck.)_
+4. **Declaration beside first use.** No hoisting locals to the top.
+5. **Formatter owns horizontal.** Never hand-align `=` columns or tags. `gofmt` / Prettier / Black / rustfmt own that. _(Pike.)_
+6. **Blank earns its place.** Third blank inside one function → extract method. Blanks mark sub-steps, not a substitute for naming. _(PEP 8 "sparingly"; Bugayenko "empty line is a code smell".)_
 
-## When to use blank line
+## When to blank
 
-| Situation                                                                 | Blank?          |
-| ------------------------------------------------------------------------- | --------------- |
-| Between top-level decls (functions, types)                                | Yes             |
-| Between import groups (stdlib / third-party / local)                      | Yes             |
-| Between field groups in struct (identity / content / timestamps)          | Yes             |
-| Inside same field group                                                   | No              |
-| Between function sub-steps (validation -> compute -> respond)             | Yes (sparingly) |
-| Before early-return on error (`if err != nil { return err }`)             | No              |
-| Before terminal success return                                            | Yes             |
-| Between observability call (e.g. `slog.ErrorContext`) and response/return | Yes             |
-| Around single statement                                                   | No              |
+| Situation                                                               | Blank?          |
+| ----------------------------------------------------------------------- | --------------- |
+| Between top-level decls (functions, types)                              | Yes             |
+| Between import groups                                                   | Yes             |
+| Between member groups (by role)                                         | Yes             |
+| Inside same member group                                                | No              |
+| Between adjacent block statements (`for`, `while`, `if`, `with`, `try`) | Yes             |
+| Between function sub-steps (validate → compute → respond)               | Yes (sparingly) |
+| Before early-return on error                                            | No              |
+| After an early-exit block (`return`/`raise`/`continue`/`break`)         | Yes             |
+| Before terminal success return                                          | Yes             |
+| Assignment whose value wraps to multiple lines                          | Yes             |
+| Around a single statement                                               | No              |
 
 ## When NOT
 
 - Between variable and first use.
-- Between error check and early return it guards.
-- Inside same semantic group (sibling struct fields, related imports, switch case members).
-- "For breathing room" without logical reason. Function long -> extract, not whitespace.
+- Between error check and the early return it guards.
+- Inside one semantic group (sibling fields, related imports, switch case members).
+- "For breathing room" with no logical reason. Function too long → extract, not whitespace.
 
-## Newspaper Metaphor applied
+## Order members by role
 
-Top-to-bottom: abstraction decreases.
+Struct fields, interface members, DTO fields, component props — one rule. Group by role, blank per group, essential → incidental.
 
+| Group           | Role                             | Examples                                |
+| --------------- | -------------------------------- | --------------------------------------- |
+| Data / identity | What it _is_; core inputs        | `id`, `label`, `href`, `items`, `value` |
+| State / flags   | Booleans describing condition    | `disabled`, `required`, `expanded`      |
+| Behavior        | Actions, menus, commands         | `actions`, `commands`                   |
+| Presentation    | Visual variants, dimensions      | `variant`, `align`, `width`             |
+| Handlers        | `on*` / callbacks                | `onselect`, `onchange`                  |
+| Timestamps      | Created / updated / deleted      | `createdAt`, `updatedAt`, `archivedAt`  |
+| Slots / embeds  | Injected markup, composed traits | `icon`, `header`, `children`, `footer`  |
+
+```go
+type Book struct {
+	ID int
+
+	AuthorID   int
+	CategoryID int
+
+	Title string
+	Price float64
+
+	Active bool
+
+	PublishedAt time.Time
+	CreatedAt   time.Time
+
+	sharedmodel.Auditable
+}
 ```
-1. package doc / file header
-2. imports (stdlib, third-party, local)
-3. constants & vars
-4. exported types
-5. constructors & primary methods
-6. private helpers
+
+- Only present groups appear.
+- `AuthorID` (foreign key) before `Title` (content) because _hierarchy_ precedes _payload_ — order by role, not by name length.
+- Within a group: most **meaningful** order (render order top→bottom, logical sequence). Length only as last resort, for genuinely interchangeable members.
+- **Member fitting no group = smell.** It belongs to an existing role, or the unit does two things → split.
+
+## Multi-line declaration = own paragraph
+
+A one-liner shares a paragraph with same-shaped siblings. Once a value wraps (length or compound logic), blank it off from the compact lines above. The wrap already broke density.
+
+```go
+sameSize := item.Width == target.Width
+sameColor := item.Color == target.Color
+
+visible := item.OwnerID == 0 ||
+	item.OwnerID == session.UserID
 ```
 
-A calls B, A above B.
+## Length & naming are diagnostics, not sort keys
 
-## Semantic grouping in structures
-
-Struct, DTO, JSON literal - same rule. Group by role, one blank per group:
-
-- **Identity** (`ID`)
-- **Hierarchy / foreign keys** (`UserID`, `ClientID`, `OrgID`)
-- **Content** (entity payload)
-- **Domain timestamps** (`StartDate`, `ExpiresAt`, `RevokedAt`)
-- **Registry timestamps** (`CreatedAt`, `UpdatedAt`)
-- **Soft delete** (`ArchivedAt`)
-- **Embeds** (composed traits last)
-
-Field with no obvious group = smell. Either belongs in existing group, or struct does two things.
-
-## Horizontal whitespace
-
-Run formatter. No argue. No disable rules locally.
-
-| Language        | Formatter                          |
-| --------------- | ---------------------------------- |
-| Go              | `gofmt` + `goimports`              |
-| Python          | `black` + `isort`                  |
-| TypeScript / JS | `prettier` + ESLint `import/order` |
-| Rust            | `rustfmt`                          |
-| Java            | `google-java-format`               |
-
-Manual `=` align -> next longer name undoes it.
+- **Length.** A short→long staircase reads calmly but never order _by_ it — it fights role order, breaks on rename, and LLMs apply it inconsistently. It falls out for free once grouped by role. Uneven lengths in a group = signal the group is heterogeneous, split it.
+- **Naming.** Name communicates role; clear role → grouping falls out. A name that lands in no group is the same warning as an ungroupable field.
 
 ## Imports
 
-Group by source, blank between groups, no blanks within:
-
-```
-stdlib
-[ blank ]
-third-party (github.com/..., npm, PyPI)
-[ blank ]
-internal cross-module
-[ blank ]
-internal same-module
-```
-
-Formatter owns import order (`goimports`, `isort`, ESLint `import/order` with `newlines-between: "always"`) -> let it. No manual reorder.
-
-## Errors: specific -> generic
-
-Multiple branches (typed -> generic 500) -> specific first, blank before generic tail:
+Groups by source, blank between, none within. Formatter owns order — never reorder by hand. Some languages also split type-only imports into their own group (see references).
 
 ```go
-if errors.Is(err, ErrNotFound) {
-    return NotFound(...)
-}
+import (
+	"context"
+	"errors"
 
-logErrorWithContext(...)
+	"github.com/jmoiron/sqlx"
 
-return InternalError(...)
+	"example.com/app/internal/book"
+)
 ```
 
-Blank marks boundary between "handled specifically" and "logging-then-failing." Without it, log fuses to previous branch.
+## Attributes in markup
 
-## When genuinely don't know
+Order by role or alphabetically per language convention. Bindings first, then directives, events, styling. Exact scheme and tooling → see references.
 
-- Section needs comment to explain -> extract named function. Name replaces comment + blank.
-- Struct has 10+ fields no obvious groups -> struct does too much; split.
-- Formatter and rule disagree -> trust formatter. No fight locally.
+## Scope: layout only
 
-## Empirical note
+These rules arrange what exists. Whether a prop _should_ exist is API design, not layout — out of scope. LLMs over-supply props by completing toward the "fully configurable component" pattern; correct that with a separate minimalism rule ("every prop earns its place"), not blank lines.
 
-Buse & Weimer (IEEE TSE, 2010): 120 annotators x 100 Java snippets. Blank-line count = strong positive predictor of readability, _more_ important than comment count. Model descriptive, not prescriptive - no sprinkle mechanically. Group by meaning, not line count.
+## Verify
 
-Full provenance - Knuth, Martin, McConnell, Beck, Fowler, Pike, Torvalds, Bugayenko counterargument, empirical record - in [`references/literature.md`](./references/literature.md).
-
-## Verification
-
-Run project formatter + build after applying:
+Run the project formatter + build. Layout never changes behavior; a broken build means something else changed.
 
 ```bash
 # Go
-gofmt -w .
-go build ./...
-
-# TypeScript / JS
-pnpm prettier --write .
-pnpm tsc --noEmit
-
+gofmt -w . && go build ./...
+# TS / JS / Svelte
+pnpm prettier --write . && pnpm eslint --fix . && pnpm tsc --noEmit
 # Python
-black .
-isort .
+ruff format . && ruff check --fix .
 ```
-
-Layout changes never alter behavior. Build breaks -> something else changed.

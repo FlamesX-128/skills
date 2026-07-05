@@ -1,20 +1,27 @@
 # Go reference
 
-Vertical-layout recipes for Go. Applies to any Go codebase regardless of architecture.
+Core rules apply. Go recipe layer. Examples use generic `book` domain — use own domain.
 
-For deeper structural conventions (file naming, layered module layout, validator) -> see [golang-modular-monolith](https://github.com/FlamesX-128/skills/tree/main/skills/golang-modular-monolith) skill.
+## Contents
 
-Examples use generic `book` domain. Replace with own.
+- Struct field grouping
+- HTTP DTOs: request, query, PATCH
+- Imports
+- Multi-line calls, sqlx scan, param & JSON literals
+- HTTP error handling: specific first, then generic
+- Returns, observability (slog)
+- Quick summary
 
 ## Struct field grouping
 
-Field order, blank between groups:
+Field order; blank between groups:
 
 | Group               | Examples                                |
 | ------------------- | --------------------------------------- |
 | Identity            | `ID`                                    |
 | Foreign keys        | `AuthorID`, `CategoryID`, `OwnerID`     |
 | Content             | `Title`, `Summary`, `Price`             |
+| State / flags       | `Active`, `Verified`, `Locked`          |
 | Domain timestamps   | `PublishedAt`, `ExpiresAt`, `RevokedAt` |
 | Registry timestamps | `CreatedAt`, `UpdatedAt`                |
 | Soft delete         | `ArchivedAt`                            |
@@ -41,7 +48,7 @@ type Book struct {
 }
 ```
 
-Domain timestamp like `RevokedAt` stays in domain-timestamps block, separated from `CreatedAt`:
+`RevokedAt` stays in domain-timestamps block, separate from `CreatedAt`:
 
 ```go
 type Session struct {
@@ -62,7 +69,7 @@ type Session struct {
 
 ### Request body
 
-Hierarchy (IDs, FKs), content, flags. Same blank-line grouping as model:
+Hierarchy (IDs, FKs), content, flags. Same grouping as model:
 
 ```go
 type CreateBookRequest struct {
@@ -79,7 +86,7 @@ type CreateBookRequest struct {
 
 ### Query with pagination
 
-Pagination embed at end, separated from filter block:
+Embed pagination at end, separate from filter block:
 
 ```go
 type ListBooksRequest struct {
@@ -95,7 +102,7 @@ type ListBooksRequest struct {
 
 ### PATCH with mutually exclusive operations
 
-Group fields by operation triggered:
+Group fields by operation:
 
 ```go
 type UpdateBookRequest struct {
@@ -113,7 +120,7 @@ type UpdateBookRequest struct {
 
 ## Imports
 
-Standard goimports grouping: stdlib, third-party, internal. Blanks between groups, no blanks within:
+goimports groups: stdlib, third-party, internal.
 
 ```go
 import (
@@ -129,11 +136,11 @@ import (
 )
 ```
 
-Let `goimports` handle order. No manual reorder.
+`goimports` handles order. No manual reorder.
 
 ## Multi-line function calls
 
-Function call with `ctx`, payload, options, one arg per line:
+Calls with `ctx`, payload, options: one arg per line:
 
 ```go
 rows, err := db.NamedQueryContext(
@@ -188,12 +195,12 @@ func SelectByID(ctx context.Context, db *sqlx.DB, params *SelectByIDParams) (*Bo
 Key:
 
 - Blank before `var result` inside `if rows.Next()`.
-- Blank before successful `return &result, nil`.
-- **No** blank before `return nil, err` in intermediate error returns.
+- Blank before success `return &result, nil`.
+- No blank before `return nil, err` in intermediate error returns.
 
 ## Param literals in function calls
 
-Group struct fields in literal by role, same as struct definition:
+Group literal fields by role, same as struct definition:
 
 ```go
 result, err := db.UpdateBook(
@@ -231,10 +238,10 @@ return c.Status(fiber.StatusOK).JSON(GetBookResponse{
 })
 ```
 
-## HTTP error handling: specific then generic
+## HTTP error handling: specific first, then generic
 
-- Specific response (`404`, `409`, `401`): no mandatory `slog`.
-- Between specific branch and generic **500**: blank, `slog`, blank, `return`.
+- Specific responses (`404`, `409`, `401`): no mandatory `slog`.
+- Between specific branch and generic `500`: blank, `slog`, blank, `return`.
 
 ```go
 if err != nil {
@@ -252,7 +259,7 @@ if err != nil {
 }
 ```
 
-`fiber.NewError` style same:
+`fiber.NewError` same:
 
 ```go
 if err != nil {
@@ -272,7 +279,7 @@ if err != nil {
 | --------------------------------------------------- | ----------------------------- |
 | Early-return error (`if err != nil { return ... }`) | No                            |
 | Terminal success return at end                      | Yes                           |
-| Return after `slog`, before 500                     | Yes (between slog and return) |
+| Return after `slog`, before `500`                   | Yes (between slog and return) |
 | Return inside successful `if rows.Next()`           | Yes (before `return &result`) |
 
 ```go
@@ -305,7 +312,7 @@ func ValidatePrice(isPromotional bool, price float64) error {
 
 ### Rule
 
-Every path returning **500** (or unexpected internal error) must log with `slog.ErrorContext` using request context:
+Every `500` path logs with `slog.ErrorContext` and request context:
 
 ```go
 slog.ErrorContext(c.Context(), "could not list books", "error", err)
@@ -315,11 +322,11 @@ Include useful attributes: `user_id`, `book_id`, `author_id`, etc.
 
 ### No `slog.Error` without context in HTTP code
 
-Always `ErrorContext` in handlers and middleware, needed to correlate with traces.
+Use `ErrorContext` in handlers and middleware to correlate traces.
 
 ### Partial errors (non-500)
 
-Main op succeeded but secondary step fails (e.g. revoking sessions after password change), log only, no change response:
+Main op succeeds, secondary step fails (e.g. revoke sessions after password change): log only, no change response:
 
 ```go
 if err := RevokeSessionsByUser(
@@ -337,7 +344,7 @@ return c.SendStatus(fiber.StatusOK)
 
 ### Failed login
 
-Keep returning generic 401 to client, log real error on server:
+Return generic `401` to client, log real error on server:
 
 ```go
 if err != nil {
@@ -358,10 +365,14 @@ go build ./...
 
 | Area                  | Rule                                                                            |
 | --------------------- | ------------------------------------------------------------------------------- |
-| Structs               | `ID`, FKs, content, domain dates, registry timestamps, archived, embeds         |
-| Imports               | stdlib, third-party, internal. Let `goimports` order                            |
-| Multi-line calls      | One arg per line when `ctx` + payload                                           |
+| Structs               | `ID`, FKs, content, flags, domain dates, registry timestamps, archived, embeds  |
+| Imports               | stdlib, third-party, internal. `goimports` orders                               |
+| Multi-line calls      | One arg per line for `ctx` + payload                                            |
 | Scan (sqlx)           | Blank before `var result`; blank before success `return`; no blank before error |
-| HTTP error paths      | Specific first, then blank + `slog.ErrorContext` + blank + 500 generic          |
-| Returns               | Blank only on terminal-success and between `slog` and 500                       |
+| HTTP error paths      | Specific first, then blank + `slog.ErrorContext` + blank + `500` generic        |
+| Returns               | Blank only on terminal success and between `slog` and `500`                     |
 | JSON / param literals | Same field grouping as struct definition                                        |
+
+## See also
+
+Deeper conventions (file naming, layout, validator): [golang-modular-monolith](https://github.com/FlamesX-128/skills/tree/main/skills/golang-modular-monolith) skill.
