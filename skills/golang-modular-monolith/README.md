@@ -45,8 +45,7 @@ Full spec in [`SKILL.md`](SKILL.md). Layer details in [`references/`](references
 
 ## Format
 
-- **[`format.bash`](format.bash)** — `ruff format` + `mdformat`.
-- **[`examples/book/format.bash`](examples/book/format.bash)** — `gofmt` + `sql-formatter`.
+Repository-wide formatting, including the Go and SQL examples, is documented in the [root README](../../README.md#development).
 
 ## License
 

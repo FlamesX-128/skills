@@ -1,0 +1,13 @@
+{
+    "name": "@flamesx-128/skills",
+    "private": true,
+    "packageManager": "pnpm@11.7.0",
+    "scripts": {
+        "format": "./format.bash",
+        "format:check": "./format.bash --check"
+    },
+    "devDependencies": {
+        "prettier": "3.9.9",
+        "sql-formatter": "15.7.2"
+    }
+}

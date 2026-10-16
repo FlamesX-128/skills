@@ -1,9 +1,0 @@
-[project]
-name = "code-paragraphs"
-version = "0.0.0"
-description = "Markdown formatter for the Code Paragraphs skill repo."
-requires-python = ">=3.12"
-dependencies = []
-
-[dependency-groups]
-dev = []

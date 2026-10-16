@@ -29,9 +29,12 @@ Python >= 3.10, git >= 2.31. No external deps.
 ## Development
 
 ```bash
-cd scripts && uv run pytest && uv run mypy workspace.py
-./format.bash
+cd scripts
+uv run --locked pytest
+uv run --locked mypy workspace.py
 ```
+
+Repository-wide formatting is documented in the [root README](../../README.md#development).
 
 ## Files
 

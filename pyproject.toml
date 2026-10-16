@@ -1,13 +1,20 @@
 [project]
-name = "agent-to-agent"
+name = "skills-dev"
 version = "0.0.0"
-description = "Minimal FIFO mailbox for collaborating AI agents."
+description = "Shared development tooling for the skills repository."
 requires-python = ">=3.10"
 dependencies = []
+
+[dependency-groups]
+dev = ["ruff==0.15.20"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+src = ["skills/*/scripts"]
+
+[tool.ruff.per-file-target-version]
+"skills/golang-modular-monolith/**/*.py" = "py312"
 
 [tool.ruff.lint]
 select = [

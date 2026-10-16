@@ -4,8 +4,9 @@ import argparse
 import threading
 import time
 
-import inbox
 import pytest
+
+import inbox
 
 
 @pytest.fixture()

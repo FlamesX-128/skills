@@ -15,7 +15,6 @@ code-paragraphs/
 ├── SKILL.md              core principles + when-to-blank tables + member ordering
 ├── README.md
 ├── LICENSE
-├── format.bash
 └── references/
     ├── go.md             recipes for Go (structs, DTOs, sqlx, slog handlers)
     ├── typescript.md     imports, type-import separation, interfaces, tooling
@@ -52,7 +51,7 @@ Svelte inherits TypeScript (`<script>`) and HTML (markup); its reference carries
 
 ## Format
 
-- **[`format.bash`](format.bash)** — `mdformat` over Markdown. Maintenance only; not part of the skill spec.
+Repository-wide formatting is documented in the [root README](../../README.md#development).
 
 ## License
 

@@ -41,6 +41,9 @@ Python >= 3.10, stdlib only. Uses inotify on Linux, polling fallback elsewhere.
 ## Development
 
 ```bash
-./format.bash
-cd scripts && python3 -m pytest
+cd scripts
+uv run --locked pytest
+uv run --locked mypy inbox.py
 ```
+
+Repository-wide formatting is documented in the [root README](../../README.md#development).

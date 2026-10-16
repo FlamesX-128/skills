@@ -13,10 +13,39 @@ Agent skills I build and maintain — my own conventions and tooling, packaged a
 
 ## Layout
 
-Each skill bundles its own `SKILL.md`, `README.md`, `LICENSE`, and tooling (validators, formatters, examples). Installs independently w/ the `skills` CLI:
+Each skill bundles its own `SKILL.md`, `README.md`, `LICENSE`, and any runtime scripts, references, or examples it needs. Repository maintenance tooling lives at the root. Skills install independently w/ the `skills` CLI:
 
 ```bash
 skills add FlamesX-128/skills --skill=code-paragraphs
+```
+
+## Development
+
+Requirements: Bash, git, Node.js with pnpm, Python >= 3.10 with uv, and Go (for `gofmt`).
+
+Install the shared formatters from the repository root:
+
+```bash
+pnpm install --frozen-lockfile
+uv sync --locked
+```
+
+Format all skills, references, tests, and examples with one command:
+
+```bash
+./format.bash
+./format.bash --check   # report formatting differences without changing files
+```
+
+The same commands are available as `pnpm format` and `pnpm format:check`. The script resolves the repository root, so it can also be called by path from another directory.
+
+Shared configuration: `.prettierrc` for Markdown, `pyproject.toml` for Ruff/Python, `.sql-formatter.json` for PostgreSQL, and `.gitignore` for generated files and local agent installations. Go uses `gofmt`. Empty Go placeholders in examples are skipped. New skills are included automatically.
+
+Python CLIs keep self-contained projects under their `scripts/` directories for tests, linting, and type checks. For example, from the repository root:
+
+```bash
+uv run --locked --directory skills/agent-workspace/scripts pytest
+uv run --locked --directory skills/agent-workspace/scripts mypy workspace.py
 ```
 
 ## Validating skills
