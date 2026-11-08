@@ -1,20 +1,29 @@
 ---
 name: code-paragraphs
-description: Vertical layout signals logical structure. Blank lines as paragraph breaks between groups of related lines — struct fields, interface members, component props, imports, statements, function steps. Attributes and members ordered by role. Use when adding or reordering fields/props, grouping imports, ordering tag attributes, judging when a blank line earns its place vs signals a missing extraction, or enforcing layout consistency across Go, TypeScript, Svelte, HTML.
+description: Apply code style when writing, editing, reviewing, or cleaning source code. Group statements and members into blank-line paragraphs by role. Includes a TypeScript/JavaScript profile with explicit import, control-flow, comment, and verification rules, plus language-specific references for Go, Python, Svelte, and HTML.
 license: MIT
-compatibility: Language-agnostic core. Per-language recipes in `references/`.
-allowed-tools: Read Edit Write Glob Grep Bash(gofmt:*) Bash(goimports:*) Bash(go:*) Bash(prettier:*) Bash(eslint:*) Bash(black:*) Bash(ruff:*) Bash(rustfmt:*) Bash(git:*)
 metadata:
     author: FlamesX-128
-    version: 2.0.0
+    version: 3.0.0
     user-invocable: true
 ---
 
 # Code Paragraphs
 
-> "Good visual layout shows the logical structure of a program." — Steve McConnell
-
 **One rule:** blank line = change of role. No blank = same role. Formatter owns horizontal space; you own vertical.
+
+## Apply the relevant profile first
+
+For TS/JS, read [typescript.md](./references/typescript.md) before editing. Its concrete rules and exceptions take precedence over the general tables below. For tooling setup or migration, also read [typescript-tooling.md](./references/typescript-tooling.md); reusable configuration lives in [assets/ts-style](./assets/ts-style/).
+
+For other languages, read only the corresponding reference. TS-specific bans on loops, ternaries, and mutable bindings do not extend to other languages or framework markup. Explicit user and repository instructions take precedence over this skill.
+
+1. Identify the touched files, effective formatter/linter config, and generator-owned paths.
+2. Apply paragraph and member rules while writing. A formatter cannot infer semantic roles.
+3. Run the existing project formatting, lint, and validation commands for the affected scope.
+4. Inspect the final diff against the applicable profile's manual checks. Lint passing alone does not establish compliance.
+
+Keep changes within the requested scope. Installing the skill does not request a repository-wide migration. Preserve evaluation order, side effects, public signatures, directive attachment, and generated output. Report an unresolved style conflict instead of suppressing it or silently claiming success.
 
 ## References
 
@@ -34,7 +43,7 @@ metadata:
 3. **Order high → low.** Public above private, caller above callee, essential above incidental. Newspaper Metaphor / Stepdown Rule. _(Martin; Beck.)_
 4. **Declaration beside first use.** No hoisting locals to the top.
 5. **Formatter owns horizontal.** Never hand-align `=` columns or tags. `gofmt` / Prettier / Black / rustfmt own that. _(Pike.)_
-6. **Blank earns its place.** Third blank inside one function → extract method. Blanks mark sub-steps, not a substitute for naming. _(PEP 8 "sparingly"; Bugayenko "empty line is a code smell".)_
+6. **Blank earns its place.** Consider extraction when a paragraph needs an independent name or responsibilities diverge. Do not extract merely because a function has three blank lines. _(PEP 8 "sparingly"; Bugayenko "empty line is a code smell".)_
 
 ## When to blank
 
@@ -111,12 +120,12 @@ visible := item.OwnerID == 0 ||
 
 ## Length & naming are diagnostics, not sort keys
 
-- **Length.** A short→long staircase reads calmly but never order _by_ it — it fights role order, breaks on rename, and LLMs apply it inconsistently. It falls out for free once grouped by role. Uneven lengths in a group = signal the group is heterogeneous, split it.
+- **Length.** Preserve semantic role and usage order first. Apply a language profile’s explicit tiebreak within interchangeable members; do not split a coherent group merely because names differ in length.
 - **Naming.** Name communicates role; clear role → grouping falls out. A name that lands in no group is the same warning as an ungroupable field.
 
 ## Imports
 
-Groups by source, blank between, none within. Formatter owns order — never reorder by hand. Some languages also split type-only imports into their own group (see references).
+Use the language profile’s group definition. In TS/JS the source module is the group: its value and type-only imports stay adjacent. Other languages may use broader source categories. Preserve runtime initialization order; alphabetization never justifies changing side effects.
 
 ```go
 import (
@@ -133,19 +142,8 @@ import (
 
 Order by role or alphabetically per language convention. Bindings first, then directives, events, styling. Exact scheme and tooling → see references.
 
-## Scope: layout only
+## Scope and verification
 
-These rules arrange what exists. Whether a prop _should_ exist is API design, not layout — out of scope. LLMs over-supply props by completing toward the "fully configurable component" pattern; correct that with a separate minimalism rule ("every prop earns its place"), not blank lines.
+The shared core concerns layout. The TS/JS profile also specifies control flow, optional properties, and comments; those edits require behavior and type checks, not just formatting. Do not introduce API options, rewrite framework constructs, or change exported parameter order to satisfy layout.
 
-## Verify
-
-Run the project formatter + build. Layout never changes behavior; a broken build means something else changed.
-
-```bash
-# Go
-gofmt -w . && go build ./...
-# TS / JS / Svelte
-pnpm prettier --write . && pnpm eslint --fix . && pnpm tsc --noEmit
-# Python
-ruff format . && ruff check --fix .
-```
+Use the project's existing commands on the affected files or packages. Run formatting and lint fixes, inspect their diff, then run checks without fixes to detect formatter/linter cycles. Run the relevant typecheck, tests, and build when code or configuration changes. State checks that could not run. For documentation-only changes, validate links and formatting instead.

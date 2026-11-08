@@ -1,6 +1,8 @@
 # Code Paragraphs
 
-Vertical layout as readability primitive: blank lines as paragraph breaks between groups of related fields, members, imports, statements, and function steps — plus role-based ordering of struct fields, props, and tag attributes. Language-agnostic core + per-language references (Go, TypeScript, Svelte, and more).
+Group code into paragraphs by purpose. Separate roles with a blank line; keep related statements and members together.
+
+The shared core supports language-specific profiles. This revision concentrates on TypeScript/JavaScript: explicit paragraph precedence, same-module value/type imports, role-based member ordering, declarative flow, optional properties, and comment policy. Go, Python, Svelte, and HTML references remain available; TS-only rules do not apply to those languages or markup.
 
 ## Install
 
@@ -8,50 +10,31 @@ Vertical layout as readability primitive: blank lines as paragraph breaks betwee
 skills add FlamesX-128/skills --skill=code-paragraphs
 ```
 
-## Structure
+## Use
 
-```
-code-paragraphs/
-├── SKILL.md              core principles + when-to-blank tables + member ordering
-├── README.md
-├── LICENSE
-└── references/
-    ├── go.md             recipes for Go (structs, DTOs, sqlx, slog handlers)
-    ├── typescript.md     imports, type-import separation, interfaces, tooling
-    ├── python.md          PEP 8 layout, TYPE_CHECKING imports, dataclass fields
-    ├── svelte.md         runes order, snippets, attribute order (inherits ts + html)
-    ├── html.md           attribute order by role
-    └── literature.md     authors, quotes, empty-line debate, empirical evidence
-```
+Start with [SKILL.md](SKILL.md), then read the applicable language profile. For TS/JS, read [typescript.md](references/typescript.md) before writing and run its final manual audit after formatting/linting. Passing lint alone does not establish paragraph or semantic ordering compliance.
 
-## Principles at a glance
+For requested tooling setup, read [typescript-tooling.md](references/typescript-tooling.md). [assets/ts-style](assets/ts-style/) contains portable shared ESLint/Prettier templates and behavior tests, adapted from Doorknocker's shared tooling. Copy and merge them into the consuming repository's root tooling; installing this skill does not install npm dependencies or change project configuration. There is no per-skill formatter installation.
 
-- **Vertical openness between concepts** — blanks separate groups playing different roles.
-- **Vertical density within concept** — no blanks inside a group.
-- **Vertical ordering: high → low** — public above private, caller above callee, essential above incidental (Newspaper Metaphor / Stepdown Rule).
-- **Order members by role** — struct fields, props, DTO fields: data → state → behavior → presentation → handlers → slots, blank per group.
-- **Order attributes by role** — markup tags: bindings → directives → events → styling (per-language scheme).
-- **Co-locate declaration with first use.**
-- **Formatter owns horizontal layout** — never align columns by hand.
-- **Blank line earns its place** — third blank in one function → extract.
+The templates cover syntax, control flow, measured complexity, and comment normalization. Paragraph meaning, member roles, import adjacency, and optional-property contracts still need manual review. They do not bundle project-specific alias migrations, framework plugins, or SQL formatting.
 
-Full rules in [`SKILL.md`](SKILL.md). Per-language recipes in [`references/`](references/). Provenance + disagreements in [`references/literature.md`](references/literature.md).
+## References
 
-## Language coverage
+| Context                             | Reference                                                 |
+| ----------------------------------- | --------------------------------------------------------- |
+| TS/JS writing and review            | [typescript.md](references/typescript.md)                 |
+| TS/JS shared tooling and onboarding | [typescript-tooling.md](references/typescript-tooling.md) |
+| Go                                  | [go.md](references/go.md)                                 |
+| Python                              | [python.md](references/python.md)                         |
+| Svelte                              | [svelte.md](references/svelte.md)                         |
+| HTML                                | [html.md](references/html.md)                             |
+| Background reading                  | [literature.md](references/literature.md)                 |
 
-| Language                | Reference                                 | Key tooling                                                   |
-| ----------------------- | ----------------------------------------- | ------------------------------------------------------------- |
-| Go                      | [go.md](references/go.md)                 | `gofmt`, `goimports`                                          |
-| TypeScript / JavaScript | [typescript.md](references/typescript.md) | `eslint-plugin-perfectionist`, `@typescript-eslint`, Prettier |
-| Python                  | [python.md](references/python.md)         | `ruff` (format + isort), PEP 8                                |
-| Svelte                  | [svelte.md](references/svelte.md)         | `eslint-plugin-svelte`, `svelte-check`                        |
-| HTML                    | [html.md](references/html.md)             | convention (no formatter reorders attributes)                 |
+Existing Svelte examples illustrate framework structure; their required reactive mutation is outside the TS profile's declarative-flow restrictions. The shared core and explicit language rules take precedence over historical heuristics in the background reading.
 
-Svelte inherits TypeScript (`<script>`) and HTML (markup); its reference carries only the Svelte-specific delta.
+## Maintenance
 
-## Format
-
-Repository-wide formatting is documented in the [root README](../../README.md#development).
+Repository-wide formatting is documented in the [root README](../../README.md#development). In a consuming project with the template dependencies installed, run `node --test scripts/style/*.test.mjs` after adapting the shared config; see the tooling reference for integration checks.
 
 ## License
 

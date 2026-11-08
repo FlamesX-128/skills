@@ -4,10 +4,10 @@ Agent skills I build and maintain — my own conventions and tooling, packaged a
 
 ## Skills
 
-| Skill                                                          | Description                                                                                                                                                                                                      |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[code-paragraphs](skills/code-paragraphs/)**                 | Vertical-layout conventions for readable code across Go, TypeScript/JS, Svelte, and HTML: blank lines as paragraph breaks, role-based ordering of struct fields, props, and tag attributes, and import grouping. |
-| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                                                                                                                          |
+| Skill                                                          | Description                                                                                                                                 |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[code-paragraphs](skills/code-paragraphs/)**                 | Code paragraphs and role-based ordering, with an explicit TS/JS style profile, reusable shared tooling, and references for other languages. |
+| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                                                     |
 
 ## Layout
 
