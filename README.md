@@ -4,18 +4,21 @@ Agent skills I build and maintain — my own conventions and tooling, packaged a
 
 ## Skills
 
-| Skill                                                          | Description                                                                                                 |
-| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **[code-paragraphs](skills/code-paragraphs/)**                 | Concise JavaScript/TypeScript style rules: paragraphs, imports, member ordering, and explicit control flow. |
-| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                     |
+| Skill                                                          | Description                                                                                                           |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **[blind-subagents](skills/blind-subagents/)**                 | Independent reviews with fresh context, using only the supplied task, artifacts, and authorized tools.                |
+| **[code-paragraphs](skills/code-paragraphs/)**                 | JavaScript/TypeScript style rules with sequential specialists for syntax, imports, members, paragraphs, and comments. |
+| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                               |
 
 ## Layout
 
-Each skill bundles its own `SKILL.md`, `README.md`, `LICENSE`, and any runtime scripts, references, or examples it needs. Repository maintenance tooling lives at the root. Skills install independently w/ the `skills` CLI:
+Each skill contains a `SKILL.md` and can include documentation, a license, runtime scripts, references, or templates. Repository maintenance tooling lives at the root. Skills install independently w/ the `skills` CLI:
 
 ```bash
 skills add FlamesX-128/skills --skill=code-paragraphs
 ```
+
+For TS/JS style work, `code-paragraphs` runs specialists sequentially on each file; separate file batches can run in parallel. See its [workflow](skills/code-paragraphs/README.md#workflow) and [optional shared ESLint/Prettier tooling](skills/code-paragraphs/README.md#optional-shared-tooling).
 
 ## Development
 
@@ -28,7 +31,7 @@ pnpm install --frozen-lockfile
 uv sync --locked
 ```
 
-Format all skills, references, tests, and examples with one command:
+Format repository Markdown, Python, Go, and SQL with one command:
 
 ```bash
 ./format.bash
@@ -66,4 +69,4 @@ skills-ref validate skills/code-paragraphs
 
 ## License
 
-Each skill carries its own `LICENSE` file. See the skill directory for terms.
+See each skill directory for its license terms.

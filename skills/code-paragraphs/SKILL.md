@@ -4,7 +4,7 @@ description: Apply when writing, editing, or reviewing JavaScript or TypeScript.
 license: MIT
 metadata:
     author: FlamesX-128
-    version: 4.0.0
+    version: 4.1.0
     user-invocable: true
 ---
 
@@ -13,6 +13,17 @@ metadata:
 ## Scope
 
 - Apply to hand-written JavaScript and TypeScript. Leave generated files unchanged.
+
+## Subagents
+
+- Assign one specialist per applicable area: syntax/flow, imports, members, paragraphs, then comments.
+- Run specialists sequentially on the same file. Wait for each to finish before starting the next on that file's updated contents.
+- For multiple files, use disjoint batches. Run batches in parallel; never let agents edit the same file concurrently.
+- Start each specialist with fresh context. Provide only the current target files, this skill, the assigned area, and permitted tools.
+- Share updated code, not proposed fixes, prior analyses, or other agents' responses. Limit access to the provided files and authorized tools.
+- Keep each specialist within its assigned area. The coordinator starts the next specialist; specialists do not delegate further.
+- Run the project's checks and give a fresh final reviewer the completed files and this skill before declaring completion.
+- If subagents are unavailable, perform separate passes for the same areas and report the limitation.
 
 ## Paragraphs
 
