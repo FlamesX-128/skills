@@ -6,8 +6,6 @@ Agent skills I build and maintain — my own conventions and tooling, packaged a
 
 | Skill                                                          | Description                                                                                                                                                                                                      |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[agent-to-agent](skills/agent-to-agent/)**                   | Minimal FIFO mailbox for LLM agents. `send`, `wait`, `drain`; peer-to-peer, no built-in hierarchy.                                                                                                               |
-| **[agent-workspace](skills/agent-workspace/)**                 | Isolated git worktree per agent for parallel, race-free edits.                                                                                                                                                   |
 | **[code-paragraphs](skills/code-paragraphs/)**                 | Vertical-layout conventions for readable code across Go, TypeScript/JS, Svelte, and HTML: blank lines as paragraph breaks, role-based ordering of struct fields, props, and tag attributes, and import grouping. |
 | **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                                                                                                                          |
 
@@ -44,8 +42,8 @@ Shared configuration: `.prettierrc` for Markdown, `pyproject.toml` for Ruff/Pyth
 Python CLIs keep self-contained projects under their `scripts/` directories for tests, linting, and type checks. For example, from the repository root:
 
 ```bash
-uv run --locked --directory skills/agent-workspace/scripts pytest
-uv run --locked --directory skills/agent-workspace/scripts mypy workspace.py
+uv run --locked --directory skills/golang-modular-monolith/scripts pytest
+uv run --locked --directory skills/golang-modular-monolith/scripts mypy validate.py
 ```
 
 ## Validating skills
