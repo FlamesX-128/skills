@@ -4,10 +4,10 @@ Agent skills I build and maintain — my own conventions and tooling, packaged a
 
 ## Skills
 
-| Skill                                                          | Description                                                                                                                                 |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[code-paragraphs](skills/code-paragraphs/)**                 | Code paragraphs and role-based ordering, with an explicit TS/JS style profile, reusable shared tooling, and references for other languages. |
-| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                                                     |
+| Skill                                                          | Description                                                                                                 |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **[code-paragraphs](skills/code-paragraphs/)**                 | Concise JavaScript/TypeScript style rules: paragraphs, imports, member ordering, and explicit control flow. |
+| **[golang-modular-monolith](skills/golang-modular-monolith/)** | Strict file-layout convention for Go modular monoliths.                                                     |
 
 ## Layout
 

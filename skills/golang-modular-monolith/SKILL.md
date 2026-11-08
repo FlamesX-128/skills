@@ -21,7 +21,6 @@ References:
 - Helper file placement -> [The tool/ slot](./references/tool-slot.md)
 - Sub-entity vs own module -> [Multi-entity decisions](./references/multi-entity.md)
 - Extending the validator -> [Validator development](./references/validator-development.md)
-- Vertical layout within files (struct field order, import groups, blank-line rules, `slog` placement) -> [code-paragraphs](https://github.com/FlamesX-128/skills/tree/main/skills/code-paragraphs) skill
 
 ## Cardinal rules
 
